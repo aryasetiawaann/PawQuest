@@ -111,6 +111,8 @@ public void Die()
     isDead = true; // Mark as dead
     anim.SetTrigger("isDead"); // Trigger death animation
 
+    Debug.Log("read.. DIEEEE ");
+
     // Disable collider
     if (enemyCollider != null)
     {

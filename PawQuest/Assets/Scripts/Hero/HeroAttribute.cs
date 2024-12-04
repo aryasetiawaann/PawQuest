@@ -42,6 +42,7 @@ public class HeroAttribute : MonoBehaviour {
 		// Die in some way
 		// This method is meant to be overwritten
 		Debug.Log(transform.name + " died.");
+		Destroy(this.gameObject);
 	}
 
 }
