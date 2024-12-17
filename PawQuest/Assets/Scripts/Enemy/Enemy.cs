@@ -3,24 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /* Handles interaction with the Enemy */
-[RequireComponent(typeof(HeroAttribute))]
 public class Enemy : Interactables
 {
-    private HeroManager heroManager;
-    private HeroAttribute myStats;
-    public float detectionRadius = 10f; // Detection range for the player
-    public float moveSpeed = 2f; // Speed at which the enemy moves toward the player
-    public float attackDistance = 4f; // Distance at which the enemy can attack
+    private HeroAttribute heroStats;
+    private GameObject targetHero;
+
+    [SerializeField] public int maxHealth = 100;
+    [SerializeField] public int damage = 2;
+    public int currentHealth { get; private set; }
+	public int currentDamage { get; private set; }
+    [SerializeField] private float detectionRadius = 10f; // Detection range for the player
+    [SerializeField] private float moveSpeed = 2f; // Speed at which the enemy moves toward the player
+    [SerializeField] private float attackDistance = 4f;
 
     private Animator anim; // Animator for the enemy
-    private bool isDead = false; // Track if the enemy is dead
+    public bool isDead = false; // Track if the enemy is dead
     private Collider enemyCollider; // Reference to the enemy's collider
     private Rigidbody rb; // Rigidbody to stop physics-based movement
+    private OpenGate gate;
 
     void Start()
     {
-        heroManager = HeroManager.instance; // Reference to the HeroManager
-        myStats = GetComponent<HeroAttribute>(); // Get the HeroAttribute component
+        currentHealth = maxHealth;
+		currentDamage = damage;
+        targetHero = GameObject.Find("Hero");
+        heroStats = GetComponent<HeroAttribute>();
         anim = GetComponent<Animator>(); // Get the Animator component
         enemyCollider = GetComponent<Collider>(); // Get the Collider component
         rb = GetComponent<Rigidbody>(); // Get the Rigidbody component, if any
@@ -36,7 +43,7 @@ void Update()
     }
 
     // Check distance to the player
-    float distanceToPlayer = Vector3.Distance(heroManager.DogKnight.transform.position, transform.position);
+    float distanceToPlayer = Vector3.Distance(targetHero.transform.position, transform.position);
 
     // If within the detection radius, move toward the player
     if (distanceToPlayer <= detectionRadius)
@@ -65,7 +72,7 @@ void MoveTowardsPlayer()
 {
     if (isDead) return; // Do nothing if the enemy is dead
 
-    Vector3 direction = (heroManager.DogKnight.transform.position - transform.position).normalized;
+    Vector3 direction = (targetHero.transform.position - transform.position).normalized;
     transform.position += direction * moveSpeed * Time.deltaTime; // Move towards the player
     FacePlayer(); // Face the player
 }
@@ -74,7 +81,7 @@ void MoveTowardsPlayer()
     // Method to face the player while moving
     void FacePlayer()
     {
-        Vector3 direction = (heroManager.DogKnight.transform.position - transform.position).normalized;
+        Vector3 direction = (targetHero.transform.position - transform.position).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
     }
@@ -82,22 +89,18 @@ void MoveTowardsPlayer()
     // Method to trigger attack animation and damage the player
     void AttackPlayer()
     {
-        anim.SetTrigger("isAttack"); // Trigger the attack animation
-        HeroCombat playerCombat = heroManager.DogKnight.GetComponent<HeroCombat>();
-        if (playerCombat != null)
-        {
-            playerCombat.Attack(myStats); // Attack the player
-        }
+        anim.SetTrigger("isAttack"); 
+        
     }
 
     // Method to handle damage taken by the enemy
-    public void TakeDamage(int damage)
+public void TakeDamage(int damage)
 {
     if (isDead) return; // Ignore damage if already dead
 
-    myStats.TakeDamage(damage); // Apply damage to the enemy's stats
-    if (myStats.currentHealth <= 0)
-    {
+    currentHealth -= damage;
+
+    if (currentHealth <= 0){
         Die();
     }
 }
@@ -111,8 +114,6 @@ public void Die()
     isDead = true; // Mark as dead
     anim.SetTrigger("isDead"); // Trigger death animation
 
-    Debug.Log("read.. DIEEEE ");
-
     // Disable collider
     if (enemyCollider != null)
     {
@@ -120,18 +121,27 @@ public void Die()
     }
 
     // Stop physics-based movement
-    if (rb != null)
-    {
-        rb.isKinematic = true;
-        rb.velocity = Vector3.zero;
-    }
+    // if (rb != null)
+    // {
+    //     rb.isKinematic = true;
+    //     rb.velocity = Vector3.zero;
+    // }
 
     // Prevent all animations and interactions
     anim.SetBool("isWalk", false);
     anim.ResetTrigger("isAttack");
 
+    gate.enemyCount -= 1;
     // Destroy the enemy after the death animation
-    Destroy(gameObject, 3f); // Adjust delay for animation timing
+    Destroy(this.gameObject, 3f); // Adjust delay for animation timing
+
+    
+}
+
+private void OnTriggerEnter(Collider other) {
+    if(other.gameObject.name == "Floors"){
+        gate = other.gameObject.GetComponent<OpenGate>();
+    }
 }
 
 }

@@ -1,34 +1,28 @@
-using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-/* Base class that player and enemies can derive from to include stats. */
-
-public class HeroAttribute : MonoBehaviour {
-
-	// Health
+public class HeroAttribute : MonoBehaviour
+{
+     // Health
 	public int maxHealth = 100;
+	public int damage = 20;
 	public int currentHealth { get; private set; }
+	public int currentDamage { get; private set; }
 
-	public Attribute damage;
-	public Attribute armor;
 
 	// Set current health to max health
 	// when starting the game.
 	void Awake ()
 	{
 		currentHealth = maxHealth;
+		currentDamage = damage;
 	}
 
 	// Damage the character
-	public void TakeDamage (int damage)
+	public void TakeDamage (int getDamage)
 	{
-		// Subtract the armor value
-		damage -= armor.GetValue();
-		damage = Mathf.Clamp(damage, 0, int.MaxValue);
-
-		// Damage the character
-		currentHealth -= damage;
-		Debug.Log(transform.name + " takes " + damage + " damage.");
+		currentHealth -= getDamage;
 
 		// If health reaches zero
 		if (currentHealth <= 0)
@@ -44,5 +38,4 @@ public class HeroAttribute : MonoBehaviour {
 		Debug.Log(transform.name + " died.");
 		Destroy(this.gameObject);
 	}
-
 }
