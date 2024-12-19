@@ -641,10 +641,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Hero
       objectReference: {fileID: 0}
+    - target: {fileID: 3951229398020017800, guid: 2ed27c7da609dac4983289fc9ae4cdb9, type: 3}
+      propertyPath: m_Name
+      value: SwordPoly
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3951229398020017800, guid: 2ed27c7da609dac4983289fc9ae4cdb9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1315344869}
   m_SourcePrefab: {fileID: 100100000, guid: 2ed27c7da609dac4983289fc9ae4cdb9, type: 3}
 --- !u!4 &395685513 stripped
 Transform:
@@ -1007,6 +1014,24 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0b1320ed17cb4234e9c46058c384fddf, type: 3}
+--- !u!1 &1315344867 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3951229398020017800, guid: 2ed27c7da609dac4983289fc9ae4cdb9, type: 3}
+  m_PrefabInstance: {fileID: 395685512}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1315344869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1315344867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bffbe3ff55ade764e9d296f7e6a9ceea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 10
 --- !u!1 &1372450351
 GameObject:
   m_ObjectHideFlags: 3
