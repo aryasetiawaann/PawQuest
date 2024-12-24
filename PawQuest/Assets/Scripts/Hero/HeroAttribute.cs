@@ -6,17 +6,20 @@ public class HeroAttribute : MonoBehaviour
 {
      // Health
 	public int maxHealth = 100;
-	public int damage = 20;
+	public int damage = 30;
 	public int currentHealth { get; private set; }
 	public int currentDamage { get; private set; }
+
+	private Sword currentSword;
 
 
 	// Set current health to max health
 	// when starting the game.
 	void Awake ()
 	{
+		currentSword = GetComponentInChildren<Sword>();
 		currentHealth = maxHealth;
-		currentDamage = damage;
+		currentDamage = damage + currentSword.damage;
 	}
 
 	// Damage the character
