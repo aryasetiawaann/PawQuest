@@ -12,18 +12,32 @@ public class Weapon : MonoBehaviour
         currentSword = GetComponentInChildren<Sword>();
     }
 
+    private void Update()
+    {
+        // Check if the sword has changed dynamically
+        Sword newSword = GetComponentInChildren<Sword>();
+        if (newSword != currentSword)
+        {
+            currentSword = newSword;
+        }
+    }
+
+    public void EquipSword(Sword newSword)
+    {
+        currentSword = newSword;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Enemy"))
         {
-            HeroAttribute hero = GameObject.Find("Hero").GetComponent<HeroAttribute>();
             HeroController heroController = GameObject.Find("Hero").GetComponent<HeroController>();
             Enemy enemy = other.gameObject.GetComponent<Enemy>();
 
-            if (enemy != null && hero != null && heroController.isAttacking)
+            if (enemy != null && heroController != null && heroController.isAttacking)
             {
                 // Use the sword's damage value
-                int damage = currentSword != null ? currentSword.damage : hero.damage; // Fallback to hero's damage if sword is null
+                int damage = currentSword != null ? currentSword.damage : 0; // Fallback to 0 if sword is null
                 enemy.TakeDamage(damage);
                 Debug.Log("Hit!!! Damage dealt: " + damage);
             }

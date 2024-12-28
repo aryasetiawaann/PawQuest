@@ -6,17 +6,13 @@ public class HeroAttribute : MonoBehaviour
 {
      // Health
 	public int maxHealth = 100;
-	public int damage = 20;
 	public int currentHealth { get; private set; }
-	public int currentDamage { get; private set; }
-
 
 	// Set current health to max health
 	// when starting the game.
 	void Awake ()
 	{
 		currentHealth = maxHealth;
-		currentDamage = damage;
 	}
 
 	// Damage the character
