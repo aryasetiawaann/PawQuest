@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HeroAttribute : MonoBehaviour
 {
-     // Health
+	// Health
 	public int maxHealth = 100;
 	public int damage = 30;
 	public int currentHealth { get; private set; }
@@ -12,10 +12,9 @@ public class HeroAttribute : MonoBehaviour
 
 	private Sword currentSword;
 
-
 	// Set current health to max health
 	// when starting the game.
-	void Awake ()
+	void Awake()
 	{
 		currentSword = GetComponentInChildren<Sword>();
 		currentHealth = maxHealth;
@@ -23,7 +22,7 @@ public class HeroAttribute : MonoBehaviour
 	}
 
 	// Damage the character
-	public void TakeDamage (int getDamage)
+	public void TakeDamage(int getDamage)
 	{
 		currentHealth -= getDamage;
 
@@ -34,7 +33,7 @@ public class HeroAttribute : MonoBehaviour
 		}
 	}
 
-	public virtual void Die ()
+	public virtual void Die()
 	{
 		// Die in some way
 		// This method is meant to be overwritten
