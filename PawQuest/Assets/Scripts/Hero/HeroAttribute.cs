@@ -12,7 +12,6 @@ public class HeroAttribute : MonoBehaviour
 	// when starting the game.
 	void Awake ()
 	{
-		currentSword = GetComponentInChildren<Sword>();
 		currentHealth = maxHealth;
 	}
 
