@@ -7,12 +7,13 @@ public class HeroAttribute : MonoBehaviour
      // Health
 	public int maxHealth = 100;
 	public int currentHealth { get; private set; }
-
+	HeroController hero;
 	// Set current health to max health
 	// when starting the game.
 	void Awake ()
 	{
 		currentHealth = maxHealth;
+		hero = GetComponent<HeroController>();
 	}
 
 	// Damage the character
@@ -27,11 +28,21 @@ public class HeroAttribute : MonoBehaviour
 		}
 	}
 
+	public void Healing(int getHealth)
+	{
+		currentHealth += getHealth;
+		if((currentHealth + getHealth) > maxHealth){
+			currentHealth = 100;
+		}
+	}
+
 	public virtual void Die ()
 	{
 		// Die in some way
 		// This method is meant to be overwritten
 		Debug.Log(transform.name + " died.");
-		Destroy(this.gameObject);
+		hero.isDead = true;
+
+		//End the game
 	}
 }

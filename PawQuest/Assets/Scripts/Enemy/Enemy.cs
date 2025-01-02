@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /* Handles interaction with the Enemy */
@@ -7,6 +9,7 @@ public class Enemy : Interactables
 {
     private HeroAttribute heroStats;
     private GameObject targetHero;
+    private bool targetDead = false;
 
     [SerializeField] public int maxHealth = 100;
     [SerializeField] public int damage = 2;
@@ -20,10 +23,12 @@ public class Enemy : Interactables
     public bool isDead = false; // Track if the enemy is dead
     private Collider enemyCollider; // Reference to the enemy's collider
     private Rigidbody rb; // Rigidbody to stop physics-based movement
-    private OpenGate gate;
+
 
     // Add an AudioSource for alert sound
     [SerializeField] private AudioSource alertSound; // Assign this in the Inspector
+    [SerializeField] private GameObject dropPrefab; // Prefab untuk objek baru
+
     private bool hasPlayedAlertSound = false; // To track if alert sound has been played
 
     void Start()
@@ -31,7 +36,7 @@ public class Enemy : Interactables
         currentHealth = maxHealth;
         currentDamage = damage;
         targetHero = GameObject.Find("Hero");
-        heroStats = GetComponent<HeroAttribute>();
+        heroStats = targetHero.GetComponent<HeroAttribute>();
         anim = GetComponent<Animator>(); // Get the Animator component
         enemyCollider = GetComponent<Collider>(); // Get the Collider component
         rb = GetComponent<Rigidbody>(); // Get the Rigidbody component, if any
@@ -39,6 +44,11 @@ public class Enemy : Interactables
 
     void Update()
     {
+
+        if(heroStats.currentHealth <= 0){
+            targetDead = true;
+        }
+   
         // Check if the enemy is dead
         if (isDead)
         {
@@ -50,7 +60,7 @@ public class Enemy : Interactables
         float distanceToPlayer = Vector3.Distance(targetHero.transform.position, transform.position);
 
         // If within the detection radius, move toward the player
-        if (distanceToPlayer <= detectionRadius)
+        if (distanceToPlayer <= detectionRadius && !targetDead)
         {
             MoveTowardsPlayer();
 
@@ -100,6 +110,7 @@ public class Enemy : Interactables
     void AttackPlayer()
     {
         anim.SetTrigger("isAttack"); 
+
     }
 
     // Method to handle damage taken by the enemy
@@ -133,16 +144,16 @@ public class Enemy : Interactables
         anim.SetBool("isWalk", false);
         anim.ResetTrigger("isAttack");
 
-        gate.enemyCount -= 1;
         // Destroy the enemy after the death animation
         Destroy(this.gameObject, 3f); // Adjust delay for animation timing
-    }
 
-    private void OnTriggerEnter(Collider other) 
-    {
-        if (other.gameObject.name == "Floors")
+        if(this.gameObject.CompareTag("Boss"))
         {
-            gate = other.gameObject.GetComponent<OpenGate>();
+            Debug.Log("STAGE COMPLETE!!");
+        }else if(this.gameObject.CompareTag("Enemy"))
+        {
+            Instantiate(dropPrefab, transform.position, Quaternion.identity);
         }
     }
+
 }
