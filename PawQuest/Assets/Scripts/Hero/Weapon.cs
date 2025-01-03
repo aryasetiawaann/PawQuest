@@ -29,7 +29,7 @@ public class Weapon : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Enemy"))
+        if (other.gameObject.CompareTag("Enemy") || other.gameObject.CompareTag("Boss"))
         {
             HeroController heroController = GameObject.Find("Hero").GetComponent<HeroController>();
             Enemy enemy = other.gameObject.GetComponent<Enemy>();
