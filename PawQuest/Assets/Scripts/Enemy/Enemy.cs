@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Enemy : Interactables
 {
     private HeroAttribute heroStats;
     private GameObject targetHero;
+    private bool targetDead = false;
 
     [SerializeField] public int maxHealth = 100;
     [SerializeField] public int damage = 2;
@@ -16,11 +18,17 @@ public class Enemy : Interactables
     [SerializeField] private float moveSpeed = 2f; // Speed at which the enemy moves toward the player
     [SerializeField] private float attackDistance = 4f;
 
-    private Animator anim;
+    private Animator anim; // Animator for the enemy
     public bool isDead = false; // Track if the enemy is dead
-    private Collider enemyCollider;
-    private Rigidbody rb;
-    private OpenGate gate;
+    private Collider enemyCollider; // Reference to the enemy's collider
+    private Rigidbody rb; // Rigidbody to stop physics-based movement
+
+
+    // Add an AudioSource for alert sound
+    [SerializeField] private AudioSource alertSound; // Assign this in the Inspector
+    [SerializeField] private GameObject dropPrefab; // Prefab untuk objek baru
+
+    private bool hasPlayedAlertSound = false; // To track if alert sound has been played
 
     // Event untuk perubahan health
     public event Action<int> OnHealthChanged;
@@ -29,12 +37,11 @@ public class Enemy : Interactables
     {
         currentHealth = maxHealth;
         currentDamage = damage;
-
         targetHero = GameObject.Find("Hero");
-        heroStats = GetComponent<HeroAttribute>();
-        anim = GetComponent<Animator>();
-        enemyCollider = GetComponent<Collider>();
-        rb = GetComponent<Rigidbody>();
+        heroStats = targetHero.GetComponent<HeroAttribute>();
+        anim = GetComponent<Animator>(); // Get the Animator component
+        enemyCollider = GetComponent<Collider>(); // Get the Collider component
+        rb = GetComponent<Rigidbody>(); // Get the Rigidbody component, if any
 
         // Trigger event pertama untuk sinkronisasi awal health
         OnHealthChanged?.Invoke(currentHealth);
@@ -42,28 +49,45 @@ public class Enemy : Interactables
 
     void Update()
     {
+        if (heroStats.currentHealth <= 0)
+        {
+            targetDead = true;
+        }
         if (isDead)
         {
             anim.SetBool("isWalk", false);
             return;
         }
 
+        // Check distance to the player
         float distanceToPlayer = Vector3.Distance(targetHero.transform.position, transform.position);
 
-        if (distanceToPlayer <= detectionRadius)
+        // If within the detection radius, move toward the player
+        if (distanceToPlayer <= detectionRadius && !targetDead)
         {
             MoveTowardsPlayer();
+
+            // Play the alert sound if not already played
+            if (!hasPlayedAlertSound)
+            {
+                alertSound.Play();
+                hasPlayedAlertSound = true; // Prevents multiple plays
+            }
+
+            // Set isWalk animation
             anim.SetBool("isWalk", true);
 
+            // Check if within attack distance
             if (distanceToPlayer <= attackDistance)
             {
-                AttackPlayer();
-                anim.SetBool("isWalk", false);
+                AttackPlayer(); // Trigger attack
+                anim.SetBool("isWalk", false); // Stop walking
             }
         }
         else
         {
-            anim.SetBool("isWalk", false);
+            anim.SetBool("isWalk", false); // Stop walking if out of detection radius
+            hasPlayedAlertSound = false; // Reset alert sound for next detection
         }
     }
 
@@ -110,29 +134,34 @@ public class Enemy : Interactables
     // Method to handle enemy death
     public void Die()
     {
-        if (isDead) return;
+        if (isDead) return; // Prevent multiple calls to Die
 
-        isDead = true;
-        anim.SetTrigger("isDead");
+        isDead = true; // Mark as dead
+        anim.SetTrigger("isDead"); // Trigger death animation
 
+        // Disable collider
         if (enemyCollider != null)
         {
             enemyCollider.enabled = false;
         }
 
+        // Prevent all animations and interactions
         anim.SetBool("isWalk", false);
         anim.ResetTrigger("isAttack");
 
-        gate.enemyCount -= 1;
-
+        // Destroy the enemy after the death animation
         Destroy(this.gameObject, 3f); // Adjust delay for animation timing
-    }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.name == "Floors")
+        if (this.gameObject.CompareTag("Boss"))
         {
-            gate = other.gameObject.GetComponent<OpenGate>();
+            Debug.Log("STAGE COMPLETE!!");
+        }
+        else if (this.gameObject.CompareTag("Enemy"))
+        {
+            Instantiate(dropPrefab, transform.position, Quaternion.identity);
         }
     }
+
+
+
 }

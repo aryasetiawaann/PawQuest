@@ -5,20 +5,16 @@ public class HeroAttribute : MonoBehaviour
 {
 	// Health
 	public int maxHealth = 100;
-	public int damage = 30;
 	public int currentHealth { get; private set; }
-	public int currentDamage { get; private set; }
-
-	private Sword currentSword;
+	HeroController hero;
 
 	// Event untuk perubahan health
 	public event Action<int> OnHealthChanged;
 
 	void Awake()
 	{
-		currentSword = GetComponentInChildren<Sword>();
 		currentHealth = maxHealth;
-		currentDamage = damage + currentSword.damage;
+		hero = GetComponent<HeroController>();
 	}
 
 	public void TakeDamage(int getDamage)
@@ -34,9 +30,22 @@ public class HeroAttribute : MonoBehaviour
 		}
 	}
 
+	public void Healing(int getHealth)
+	{
+		currentHealth += getHealth;
+		if ((currentHealth + getHealth) > maxHealth)
+		{
+			currentHealth = 100;
+		}
+	}
+
 	public virtual void Die()
 	{
+		// Die in some way
+		// This method is meant to be overwritten
 		Debug.Log(transform.name + " died.");
-		Destroy(this.gameObject);
+		hero.isDead = true;
+
+		//End the game
 	}
 }
