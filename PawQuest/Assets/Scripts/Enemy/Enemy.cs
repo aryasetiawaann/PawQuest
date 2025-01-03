@@ -31,6 +31,7 @@ public class Enemy : Interactables
 
     private bool hasPlayedAlertSound = false; // To track if alert sound has been played
 
+    public event Action<int> OnHealthChanged;
     void Start()
     {
         currentHealth = maxHealth;
@@ -40,15 +41,18 @@ public class Enemy : Interactables
         anim = GetComponent<Animator>(); // Get the Animator component
         enemyCollider = GetComponent<Collider>(); // Get the Collider component
         rb = GetComponent<Rigidbody>(); // Get the Rigidbody component, if any
+
+        OnHealthChanged?.Invoke(currentHealth);
     }
 
     void Update()
     {
 
-        if(heroStats.currentHealth <= 0){
+        if (heroStats.currentHealth <= 0)
+        {
             targetDead = true;
         }
-   
+
         // Check if the enemy is dead
         if (isDead)
         {
@@ -109,7 +113,7 @@ public class Enemy : Interactables
     // Method to trigger attack animation and damage the player
     void AttackPlayer()
     {
-        anim.SetTrigger("isAttack"); 
+        anim.SetTrigger("isAttack");
 
     }
 
@@ -119,6 +123,8 @@ public class Enemy : Interactables
         if (isDead) return; // Ignore damage if already dead
 
         currentHealth -= damage;
+
+        OnHealthChanged?.Invoke(currentHealth);
 
         if (currentHealth <= 0)
         {
@@ -147,10 +153,11 @@ public class Enemy : Interactables
         // Destroy the enemy after the death animation
         Destroy(this.gameObject, 3f); // Adjust delay for animation timing
 
-        if(this.gameObject.CompareTag("Boss"))
+        if (this.gameObject.CompareTag("Boss"))
         {
             Debug.Log("STAGE COMPLETE!!");
-        }else if(this.gameObject.CompareTag("Enemy"))
+        }
+        else if (this.gameObject.CompareTag("Enemy"))
         {
             Instantiate(dropPrefab, transform.position, Quaternion.identity);
         }
