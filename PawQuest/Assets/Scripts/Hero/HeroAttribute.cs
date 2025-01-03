@@ -5,8 +5,17 @@ public class HeroAttribute : MonoBehaviour
 {
 	// Health
 	public int maxHealth = 100;
+<<<<<<< Updated upstream
 	public int currentHealth { get; private set; }
 	HeroController hero;
+=======
+
+	public int currentHealth { get; private set; }
+
+	HeroController hero;
+
+	private Sword currentSword;
+>>>>>>> Stashed changes
 
 	// Event untuk perubahan health
 	public event Action<int> OnHealthChanged;
@@ -45,7 +54,10 @@ public class HeroAttribute : MonoBehaviour
 		// This method is meant to be overwritten
 		Debug.Log(transform.name + " died.");
 		hero.isDead = true;
+<<<<<<< Updated upstream
 
 		//End the game
+=======
+>>>>>>> Stashed changes
 	}
 }

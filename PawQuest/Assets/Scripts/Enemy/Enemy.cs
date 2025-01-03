@@ -10,6 +10,8 @@ public class Enemy : Interactables
     private GameObject targetHero;
     private bool targetDead = false;
 
+    private bool targetDead = false;
+
     [SerializeField] public int maxHealth = 100;
     [SerializeField] public int damage = 2;
     public int currentHealth { get; private set; }
@@ -20,6 +22,7 @@ public class Enemy : Interactables
 
     private Animator anim; // Animator for the enemy
     public bool isDead = false; // Track if the enemy is dead
+<<<<<<< Updated upstream
     private Collider enemyCollider; // Reference to the enemy's collider
     private Rigidbody rb; // Rigidbody to stop physics-based movement
 
@@ -29,7 +32,14 @@ public class Enemy : Interactables
     [SerializeField] private GameObject dropPrefab; // Prefab untuk objek baru
 
     private bool hasPlayedAlertSound = false; // To track if alert sound has been played
+=======
+    private Collider enemyCollider;
+    private Rigidbody rb;
+>>>>>>> Stashed changes
 
+    [SerializeField] private AudioSource alertSound; // Assign this in the Inspector
+    [SerializeField] private GameObject dropPrefab; // Prefab untuk objek baru
+    private bool hasPlayedAlertSound = false; // To track if alert sound has been played
     // Event untuk perubahan health
     public event Action<int> OnHealthChanged;
 
@@ -49,6 +59,10 @@ public class Enemy : Interactables
 
     void Update()
     {
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
         if (heroStats.currentHealth <= 0)
         {
             targetDead = true;
@@ -62,7 +76,10 @@ public class Enemy : Interactables
         // Check distance to the player
         float distanceToPlayer = Vector3.Distance(targetHero.transform.position, transform.position);
 
+<<<<<<< Updated upstream
         // If within the detection radius, move toward the player
+=======
+>>>>>>> Stashed changes
         if (distanceToPlayer <= detectionRadius && !targetDead)
         {
             MoveTowardsPlayer();
@@ -163,5 +180,8 @@ public class Enemy : Interactables
     }
 
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 }
