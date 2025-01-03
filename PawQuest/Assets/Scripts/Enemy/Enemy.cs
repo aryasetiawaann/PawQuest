@@ -1,8 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/* Handles interaction with the Enemy */
 public class Enemy : Interactables
 {
     private HeroAttribute heroStats;
@@ -11,72 +11,71 @@ public class Enemy : Interactables
     [SerializeField] public int maxHealth = 100;
     [SerializeField] public int damage = 2;
     public int currentHealth { get; private set; }
-	public int currentDamage { get; private set; }
+    public int currentDamage { get; private set; }
     [SerializeField] private float detectionRadius = 10f; // Detection range for the player
     [SerializeField] private float moveSpeed = 2f; // Speed at which the enemy moves toward the player
     [SerializeField] private float attackDistance = 4f;
 
-    private Animator anim; // Animator for the enemy
+    private Animator anim;
     public bool isDead = false; // Track if the enemy is dead
-    private Collider enemyCollider; // Reference to the enemy's collider
-    private Rigidbody rb; // Rigidbody to stop physics-based movement
+    private Collider enemyCollider;
+    private Rigidbody rb;
     private OpenGate gate;
+
+    // Event untuk perubahan health
+    public event Action<int> OnHealthChanged;
 
     void Start()
     {
         currentHealth = maxHealth;
-		currentDamage = damage;
+        currentDamage = damage;
+
         targetHero = GameObject.Find("Hero");
         heroStats = GetComponent<HeroAttribute>();
-        anim = GetComponent<Animator>(); // Get the Animator component
-        enemyCollider = GetComponent<Collider>(); // Get the Collider component
-        rb = GetComponent<Rigidbody>(); // Get the Rigidbody component, if any
+        anim = GetComponent<Animator>();
+        enemyCollider = GetComponent<Collider>();
+        rb = GetComponent<Rigidbody>();
+
+        // Trigger event pertama untuk sinkronisasi awal health
+        OnHealthChanged?.Invoke(currentHealth);
     }
 
-void Update()
-{
-    // Check if the enemy is dead
-    if (isDead)
+    void Update()
     {
-        anim.SetBool("isWalk", false);
-        return;
-    }
-
-    // Check distance to the player
-    float distanceToPlayer = Vector3.Distance(targetHero.transform.position, transform.position);
-
-    // If within the detection radius, move toward the player
-    if (distanceToPlayer <= detectionRadius)
-    {
-        MoveTowardsPlayer();
-
-        // Set isWalk animation
-        anim.SetBool("isWalk", true);
-
-        // Check if within attack distance
-        if (distanceToPlayer <= attackDistance)
+        if (isDead)
         {
-            AttackPlayer(); // Trigger attack
-            anim.SetBool("isWalk", false); // Stop walking
+            anim.SetBool("isWalk", false);
+            return;
+        }
+
+        float distanceToPlayer = Vector3.Distance(targetHero.transform.position, transform.position);
+
+        if (distanceToPlayer <= detectionRadius)
+        {
+            MoveTowardsPlayer();
+            anim.SetBool("isWalk", true);
+
+            if (distanceToPlayer <= attackDistance)
+            {
+                AttackPlayer();
+                anim.SetBool("isWalk", false);
+            }
+        }
+        else
+        {
+            anim.SetBool("isWalk", false);
         }
     }
-    else
-    {
-        anim.SetBool("isWalk", false); // Stop walking if out of detection radius
-    }
-}
-
 
     // Method to move the enemy towards the player
-void MoveTowardsPlayer()
-{
-    if (isDead) return; // Do nothing if the enemy is dead
+    void MoveTowardsPlayer()
+    {
+        if (isDead) return;
 
-    Vector3 direction = (targetHero.transform.position - transform.position).normalized;
-    transform.position += direction * moveSpeed * Time.deltaTime; // Move towards the player
-    FacePlayer(); // Face the player
-}
-
+        Vector3 direction = (targetHero.transform.position - transform.position).normalized;
+        transform.position += direction * moveSpeed * Time.deltaTime;
+        FacePlayer();
+    }
 
     // Method to face the player while moving
     void FacePlayer()
@@ -86,62 +85,54 @@ void MoveTowardsPlayer()
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
     }
 
-    // Method to trigger attack animation and damage the player
+    // Method to trigger attack animation
     void AttackPlayer()
     {
-        anim.SetTrigger("isAttack"); 
-        
+        anim.SetTrigger("isAttack");
     }
 
     // Method to handle damage taken by the enemy
-public void TakeDamage(int damage)
-{
-    if (isDead) return; // Ignore damage if already dead
+    public void TakeDamage(int damage)
+    {
+        if (isDead) return;
 
-    currentHealth -= damage;
+        currentHealth -= damage;
 
-    if (currentHealth <= 0){
-        Die();
+        // Trigger event saat health berubah
+        OnHealthChanged?.Invoke(currentHealth);
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
     }
-}
-
 
     // Method to handle enemy death
-public void Die()
-{
-    if (isDead) return; // Prevent multiple calls to Die
-
-    isDead = true; // Mark as dead
-    anim.SetTrigger("isDead"); // Trigger death animation
-
-    // Disable collider
-    if (enemyCollider != null)
+    public void Die()
     {
-        enemyCollider.enabled = false;
+        if (isDead) return;
+
+        isDead = true;
+        anim.SetTrigger("isDead");
+
+        if (enemyCollider != null)
+        {
+            enemyCollider.enabled = false;
+        }
+
+        anim.SetBool("isWalk", false);
+        anim.ResetTrigger("isAttack");
+
+        gate.enemyCount -= 1;
+
+        Destroy(this.gameObject, 3f); // Adjust delay for animation timing
     }
 
-    // Stop physics-based movement
-    // if (rb != null)
-    // {
-    //     rb.isKinematic = true;
-    //     rb.velocity = Vector3.zero;
-    // }
-
-    // Prevent all animations and interactions
-    anim.SetBool("isWalk", false);
-    anim.ResetTrigger("isAttack");
-
-    gate.enemyCount -= 1;
-    // Destroy the enemy after the death animation
-    Destroy(this.gameObject, 3f); // Adjust delay for animation timing
-
-    
-}
-
-private void OnTriggerEnter(Collider other) {
-    if(other.gameObject.name == "Floors"){
-        gate = other.gameObject.GetComponent<OpenGate>();
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.name == "Floors")
+        {
+            gate = other.gameObject.GetComponent<OpenGate>();
+        }
     }
-}
-
 }

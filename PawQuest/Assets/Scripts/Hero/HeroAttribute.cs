@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class HeroAttribute : MonoBehaviour
 {
@@ -12,8 +11,9 @@ public class HeroAttribute : MonoBehaviour
 
 	private Sword currentSword;
 
-	// Set current health to max health
-	// when starting the game.
+	// Event untuk perubahan health
+	public event Action<int> OnHealthChanged;
+
 	void Awake()
 	{
 		currentSword = GetComponentInChildren<Sword>();
@@ -21,12 +21,13 @@ public class HeroAttribute : MonoBehaviour
 		currentDamage = damage + currentSword.damage;
 	}
 
-	// Damage the character
 	public void TakeDamage(int getDamage)
 	{
 		currentHealth -= getDamage;
 
-		// If health reaches zero
+		// Panggil event untuk health bar
+		OnHealthChanged?.Invoke(currentHealth);
+
 		if (currentHealth <= 0)
 		{
 			Die();
@@ -35,8 +36,6 @@ public class HeroAttribute : MonoBehaviour
 
 	public virtual void Die()
 	{
-		// Die in some way
-		// This method is meant to be overwritten
 		Debug.Log(transform.name + " died.");
 		Destroy(this.gameObject);
 	}
