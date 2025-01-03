@@ -1239,13 +1239,10 @@ MonoBehaviour:
   radius: 10
   interactionTransform: {fileID: 7646349510427650932}
   maxHealth: 100
-  damage: 2
+  damage: 5
   detectionRadius: 10
   moveSpeed: 2
   attackDistance: 4
-  isDead: 0
-  alertSound: {fileID: 0}
-  dropPrefab: {fileID: 8594701906202543874, guid: 2a1453fdbacbd9749a2bdd63ef95d43b, type: 3}
 --- !u!1 &7279644999054317091
 GameObject:
   m_ObjectHideFlags: 0

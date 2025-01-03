@@ -1016,10 +1016,11 @@ GameObject:
   - component: {fileID: 6157731307200045574}
   - component: {fileID: 5178279230741023299}
   - component: {fileID: 2351183435929237280}
+  - component: {fileID: 2029067259785312312}
   - component: {fileID: 3769206471348333006}
   m_Layer: 0
   m_Name: Boss
-  m_TagString: Boss
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1087,7 +1088,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
@@ -1115,6 +1116,23 @@ CapsuleCollider:
   m_Height: 1.4442735
   m_Direction: 1
   m_Center: {x: 0, y: 0.71670675, z: 0}
+--- !u!114 &2029067259785312312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6387968445272871039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e2c93c2ba39a664aa99ab1eb4dc1e59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  damage:
+    baseValue: 0
+  armor:
+    baseValue: 0
 --- !u!114 &3769206471348333006
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1129,14 +1147,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   radius: 10
   interactionTransform: {fileID: 3970038136817701516}
-  maxHealth: 100
-  damage: 10
   detectionRadius: 10
   moveSpeed: 2
   attackDistance: 4
-  isDead: 0
-  alertSound: {fileID: 0}
-  dropPrefab: {fileID: 0}
 --- !u!1 &6603440264344184461
 GameObject:
   m_ObjectHideFlags: 0

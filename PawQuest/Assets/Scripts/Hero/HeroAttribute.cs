@@ -7,6 +7,7 @@ public class HeroAttribute : MonoBehaviour
 	public int maxHealth = 100;
 <<<<<<< Updated upstream
 	public int currentHealth { get; private set; }
+<<<<<<< HEAD
 	HeroController hero;
 =======
 
@@ -21,9 +22,14 @@ public class HeroAttribute : MonoBehaviour
 	public event Action<int> OnHealthChanged;
 
 	void Awake()
+=======
+
+	// Set current health to max health
+	// when starting the game.
+	void Awake ()
+>>>>>>> parent of 7ee8a8e (Add death animation, boss, delete openGate)
 	{
 		currentHealth = maxHealth;
-		hero = GetComponent<HeroController>();
 	}
 
 	public void TakeDamage(int getDamage)
@@ -39,6 +45,7 @@ public class HeroAttribute : MonoBehaviour
 		}
 	}
 
+<<<<<<< HEAD
 	public void Healing(int getHealth)
 	{
 		currentHealth += getHealth;
@@ -49,15 +56,22 @@ public class HeroAttribute : MonoBehaviour
 	}
 
 	public virtual void Die()
+=======
+	public virtual void Die ()
+>>>>>>> parent of 7ee8a8e (Add death animation, boss, delete openGate)
 	{
 		// Die in some way
 		// This method is meant to be overwritten
 		Debug.Log(transform.name + " died.");
+<<<<<<< HEAD
 		hero.isDead = true;
 <<<<<<< Updated upstream
 
 		//End the game
 =======
 >>>>>>> Stashed changes
+=======
+		Destroy(this.gameObject);
+>>>>>>> parent of 7ee8a8e (Add death animation, boss, delete openGate)
 	}
 }

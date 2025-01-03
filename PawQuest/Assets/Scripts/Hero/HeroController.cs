@@ -39,7 +39,6 @@ public class HeroController : MonoBehaviour
 
     // Variabel untuk Attack
     public bool isAttacking;
-    public bool isDead = false;
 
 
     // Gravitasi
@@ -73,28 +72,23 @@ public class HeroController : MonoBehaviour
         handleRotation();
         handleAnimation();
 
-        if(!isDead){
-            if(isRunPressed){
-                cameraRelativeMovement = ConvertToCameraSpace(currentRunMovement);
-                heroController.Move(cameraRelativeMovement * Time.deltaTime);
-            }
-            else{
-                cameraRelativeMovement = ConvertToCameraSpace(currentMovement);
-                heroController.Move(cameraRelativeMovement * Time.deltaTime);
+        if(isRunPressed){
+            cameraRelativeMovement = ConvertToCameraSpace(currentRunMovement);
+            heroController.Move(cameraRelativeMovement * Time.deltaTime);
+        }
+        else{
+            cameraRelativeMovement = ConvertToCameraSpace(currentMovement);
+            heroController.Move(cameraRelativeMovement * Time.deltaTime);
 
-            }
-
-            if(playerInput.HeroControls.Attack.triggered){
-                handleAttack();
-            }
-
-            handleJumping();
-        }else{
-            animator.SetBool("isDeath", true);
         }
 
+        if(playerInput.HeroControls.Attack.triggered){
+            handleAttack();
+        }
 
         handleGravity();
+        handleJumping();
+        handleDodging();
     }
 
     void setupJumpVariable(){

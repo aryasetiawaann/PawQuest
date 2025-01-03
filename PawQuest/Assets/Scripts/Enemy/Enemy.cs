@@ -1,14 +1,11 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Enemy : Interactables
 {
     private HeroAttribute heroStats;
     private GameObject targetHero;
-    private bool targetDead = false;
 
     private bool targetDead = false;
 
@@ -25,12 +22,10 @@ public class Enemy : Interactables
 <<<<<<< Updated upstream
     private Collider enemyCollider; // Reference to the enemy's collider
     private Rigidbody rb; // Rigidbody to stop physics-based movement
-
+    private OpenGate gate;
 
     // Add an AudioSource for alert sound
     [SerializeField] private AudioSource alertSound; // Assign this in the Inspector
-    [SerializeField] private GameObject dropPrefab; // Prefab untuk objek baru
-
     private bool hasPlayedAlertSound = false; // To track if alert sound has been played
 =======
     private Collider enemyCollider;
@@ -48,7 +43,7 @@ public class Enemy : Interactables
         currentHealth = maxHealth;
         currentDamage = damage;
         targetHero = GameObject.Find("Hero");
-        heroStats = targetHero.GetComponent<HeroAttribute>();
+        heroStats = GetComponent<HeroAttribute>();
         anim = GetComponent<Animator>(); // Get the Animator component
         enemyCollider = GetComponent<Collider>(); // Get the Collider component
         rb = GetComponent<Rigidbody>(); // Get the Rigidbody component, if any
@@ -59,6 +54,7 @@ public class Enemy : Interactables
 
     void Update()
     {
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
 
@@ -67,6 +63,9 @@ public class Enemy : Interactables
         {
             targetDead = true;
         }
+=======
+        // Check if the enemy is dead
+>>>>>>> parent of 7ee8a8e (Add death animation, boss, delete openGate)
         if (isDead)
         {
             anim.SetBool("isWalk", false);
@@ -78,9 +77,13 @@ public class Enemy : Interactables
 
 <<<<<<< Updated upstream
         // If within the detection radius, move toward the player
+<<<<<<< HEAD
 =======
 >>>>>>> Stashed changes
         if (distanceToPlayer <= detectionRadius && !targetDead)
+=======
+        if (distanceToPlayer <= detectionRadius)
+>>>>>>> parent of 7ee8a8e (Add death animation, boss, delete openGate)
         {
             MoveTowardsPlayer();
 
@@ -129,7 +132,11 @@ public class Enemy : Interactables
     // Method to trigger attack animation
     void AttackPlayer()
     {
+<<<<<<< HEAD
         anim.SetTrigger("isAttack");
+=======
+        anim.SetTrigger("isAttack"); 
+>>>>>>> parent of 7ee8a8e (Add death animation, boss, delete openGate)
     }
 
     // Method to handle damage taken by the enemy
@@ -166,8 +173,10 @@ public class Enemy : Interactables
         anim.SetBool("isWalk", false);
         anim.ResetTrigger("isAttack");
 
+        gate.enemyCount -= 1;
         // Destroy the enemy after the death animation
         Destroy(this.gameObject, 3f); // Adjust delay for animation timing
+<<<<<<< HEAD
 
         if (this.gameObject.CompareTag("Boss"))
         {
@@ -185,3 +194,15 @@ public class Enemy : Interactables
 =======
 >>>>>>> Stashed changes
 }
+=======
+    }
+
+    private void OnTriggerEnter(Collider other) 
+    {
+        if (other.gameObject.name == "Floors")
+        {
+            gate = other.gameObject.GetComponent<OpenGate>();
+        }
+    }
+}
+>>>>>>> parent of 7ee8a8e (Add death animation, boss, delete openGate)
