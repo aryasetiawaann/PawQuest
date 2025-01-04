@@ -1,4 +1,4 @@
-# Game PawQuest 🎮
+# PawQuest
 
 **PawQuest** adalah game bergenre eksplorasi dungeon, yang mana pemain harus menghadapi berbagai musuh, termasuk bos yang kuat, untuk menyelesaikan permainan. Tujuan utama dari game ini adalah menguji seberapa cepat pemain dapat menyelesaikan tantangan dan mencapai akhir permainan.
 
