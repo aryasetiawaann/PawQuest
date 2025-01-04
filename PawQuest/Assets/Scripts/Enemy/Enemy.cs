@@ -158,17 +158,22 @@ public class Enemy : Interactables
         anim.ResetTrigger("isAttack");
 
         // Destroy the enemy after the death animation
-        Destroy(this.gameObject, 3f); // Adjust delay for animation timing
+        Destroy(this.gameObject, 4f); // Adjust delay for animation timing
 
         if (this.gameObject.CompareTag("Boss"))
         {
-            Debug.Log("STAGE COMPLETE!!");
-            SceneManager.LoadScene(4);
+            StartCoroutine(LoadSceneWithDelay(4, 3f));
         }
         else if (this.gameObject.CompareTag("Enemy"))
         {
             Instantiate(dropPrefab, transform.position, Quaternion.identity);
         }
+    }
+
+    private IEnumerator LoadSceneWithDelay(int sceneIndex, float delay)
+    {
+        yield return new WaitForSeconds(delay); // Tunggu selama delay (3 detik)
+        SceneManager.LoadScene(sceneIndex); // Pindah ke scene baru
     }
 
 }

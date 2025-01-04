@@ -36,6 +36,9 @@ public class HeroAttribute : MonoBehaviour
 	public void Healing(int getHealth)
 	{
 		currentHealth += getHealth;
+
+		OnHealthChanged?.Invoke(currentHealth);
+		
 		if ((currentHealth + getHealth) > maxHealth)
 		{
 			currentHealth = 100;
