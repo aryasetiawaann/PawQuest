@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using UnityEditor;
+
 
 public class MainMenuUI : MonoBehaviour
 {
@@ -19,12 +19,22 @@ public class MainMenuUI : MonoBehaviour
 
         exitButton.onClick.AddListener(() =>
         {
-#if UNITY_EDITOR
-        EditorApplication.isPlaying = false; // Stop the play mode in the editor
-#else
-            Application.Quit(); // Quit application for builds
-#endif
+            QuitApplication(); // Memanggil fungsi quit yang universal
         });
+    }
+
+    private void QuitApplication()
+    {
+        // Quit aplikasi, tergantung platform
+        if (Application.isEditor)
+        {
+            Debug.Log("Quit is not supported in editor mode. Stopping play mode instead.");
+            // Debug.Log saja jika sedang di editor
+        }
+        else
+        {
+            Application.Quit(); // Quit untuk build
+        }
     }
 
     // Remove PlayClick if not needed or add logic if it will be used
