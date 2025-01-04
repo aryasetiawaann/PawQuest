@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
 
 /* Handles interaction with the Enemy */
 public class Enemy : Interactables
@@ -10,6 +13,7 @@ public class Enemy : Interactables
     private HeroAttribute heroStats;
     private GameObject targetHero;
     private bool targetDead = false;
+
 
     [SerializeField] public int maxHealth = 100;
     [SerializeField] public int damage = 2;
@@ -43,6 +47,8 @@ public class Enemy : Interactables
         rb = GetComponent<Rigidbody>(); // Get the Rigidbody component, if any
 
         OnHealthChanged?.Invoke(currentHealth);
+
+
     }
 
     void Update()
@@ -77,6 +83,7 @@ public class Enemy : Interactables
 
             // Set isWalk animation
             anim.SetBool("isWalk", true);
+
 
             // Check if within attack distance
             if (distanceToPlayer <= attackDistance)
@@ -156,6 +163,7 @@ public class Enemy : Interactables
         if (this.gameObject.CompareTag("Boss"))
         {
             Debug.Log("STAGE COMPLETE!!");
+            SceneManager.LoadScene(4);
         }
         else if (this.gameObject.CompareTag("Enemy"))
         {

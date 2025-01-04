@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System;
 
 public class HeroAttribute : MonoBehaviour
@@ -48,6 +49,6 @@ public class HeroAttribute : MonoBehaviour
 		Debug.Log(transform.name + " died.");
 		hero.isDead = true;
 
-		//End the game
+		SceneManager.LoadScene(3);
 	}
 }

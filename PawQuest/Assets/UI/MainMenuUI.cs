@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEditor;
 
 public class MainMenuUI : MonoBehaviour
 {
@@ -18,7 +19,11 @@ public class MainMenuUI : MonoBehaviour
 
         exitButton.onClick.AddListener(() =>
         {
-            Application.Quit(); // Quit application
+#if UNITY_EDITOR
+        EditorApplication.isPlaying = false; // Stop the play mode in the editor
+#else
+            Application.Quit(); // Quit application for builds
+#endif
         });
     }
 
